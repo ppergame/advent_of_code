@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+<meta charset="utf-8"/>
+<title>Settings - Advent of Code 2015</title>
+<!--[if lt IE 9]><script src="/static/html5.js"></script><![endif]-->
+<link href='//fonts.googleapis.com/css?family=Source+Code+Pro:300&subset=latin,latin-ext' rel='stylesheet' type='text/css'/>
+<link rel="stylesheet" type="text/css" href="/static/style.css?30"/>
+<link rel="stylesheet alternate" type="text/css" href="/static/highcontrast.css?0" title="High Contrast"/>
+<link rel="shortcut icon" href="/favicon.png"/>
+<script>window.addEventListener('click', function(e,s,r){if(e.target.nodeName==='CODE'&&e.detail===3){s=window.getSelection();s.removeAllRanges();r=document.createRange();r.selectNodeContents(e.target);s.addRange(r);}});</script>
+</head><!--
+
+
+
+
+Oh, hello!  Funny seeing you here.
+
+I appreciate your enthusiasm, but you aren't going to find much down here.
+There certainly aren't clues to any of the puzzles.  The best surprises don't
+even appear in the source until you unlock them for real.
+
+Please be careful with automated requests; I'm not a massive company, and I can
+only take so much traffic.  Please be considerate so that everyone gets to play.
+
+If you're curious about how Advent of Code works, it's running on some custom
+Perl code. Other than a few integrations (auth, analytics, social media), I
+built the whole thing myself, including the design, animations, prose, and all
+of the puzzles.
+
+The puzzles are most of the work; preparing a new calendar and a new set of
+puzzles each year takes all of my free time for 4-5 months. A lot of effort
+went into building this thing - I hope you're enjoying playing it as much as I
+enjoyed making it for you!
+
+If you'd like to hang out, I'm @ericwastl on Twitter.
+
+- Eric Wastl
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-->
+<body>
+<header><div><h1 class="title-global"><a href="/">Advent of Code</a></h1><nav><ul><li><a href="/2015/about">[About]</a></li><li><a href="/2015/events">[Events]</a></li><li><a href="https://teespring.com/stores/advent-of-code" target="_blank">[Shop]</a></li><li><a href="/2015/settings">[Settings]</a></li><li><a href="/2015/auth/logout">[Log Out]</a></li></ul></nav><div class="user">John Kent</div></div><div><h1 class="title-event">&nbsp;&nbsp;<span class="title-event-wrap">0.0.0.0:</span><a href="/2015">2015</a><span class="title-event-wrap"></span></h1><nav><ul><li><a href="/2015">[Calendar]</a></li><li><a href="/2015/support">[AoC++]</a></li><li><a href="/2015/sponsors">[Sponsors]</a></li><li><a href="/2015/leaderboard">[Leaderboard]</a></li><li><a href="/2015/stats">[Stats]</a></li></ul></nav></div></header>
+
+<div id="sidebar">
+</div><!--/sidebar-->
+
+<main>
+<article>
+<p>What would you like to be called?</p>
+<script>function anon(a){document.getElementById("display_url").disabled=a;}</script><form id="settings" action="settings/save" method="post" style="width:45em;">
+<input type="hidden" name="csrf_token" value="53616"/>
+<div><label><input type="radio" name="display_name" onchange="anon(true)" value="anonymous"/><span>(anonymous user #2279184)</span></label></div>
+<div><label><input type="radio" name="display_name" onchange="anon(false)" value="0" checked="checked"/><span><img src="https://lh3.googleusercontent.com/a/ALm5wu2hgTQSTMhgex7-GM9hzI80jyBGx7i4Xkr145Fg=s96-c" height="20"/>Schmon Fent</span></label></div>
+<p>Sponsor join code: <input type="text" name="sponsor_join" oninput="document.getElementById('sponsor-privboard-warning').classList[/-/.exec(this.value)?'add':'remove']('warning-active')"/> <span class="quiet">(Leave blank unless you are an employee (or similar) of a sponsor. </span><span id="sponsor-privboard-warning" class="quiet warning">Not for <a href="/2015/leaderboard/private">private leaderboard</a> codes.</span><span class="quiet">)</span></p><p style="margin-bottom:3em;"><input type="submit" value="[Save]"/></p></form>
+<p style="width:45em;">Advanced actions:</p>
+<ul style="width:45em;">
+<li>Provide <span class="hidden-until-hover"><code>ownerproof-2279184-1111111111-ffffffffffff</code></span> if you are asked to prove you own this account by an Advent of Code administrator. Don't post this code in a public place.</li>
+<li><form action="settings/transfer-out" method="post" style="width:45em;"><input type="hidden" name="csrf_token" value="53616"/>You can <input type="submit" value="[Transfer your data to another account]"/> if you want to change your authentication method. The destination account needs to be empty.</form></li>
+<li><form action="settings/transfer-in" method="post" style="width:45em;"><input type="hidden" name="csrf_token" value="53616"/>You can <input type="submit" value="[Transfer your data into this account]"/> if this account is empty and has the authentication method you want to use.</form></li>
+</ul>
+</article>
+</main>
+
+<!-- ga -->
+<script>
+(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+})(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+ga('create', 'UA-69522494-1', 'auto');
+ga('set', 'anonymizeIp', true);
+ga('send', 'pageview');
+</script>
+<!-- /ga -->
+</body>
+</html>

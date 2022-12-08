@@ -1,0 +1,41 @@
+[package]
+name = "aoc2021"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+anyhow = "1.0.66"
+aoc-runner = "0"
+aoc-runner-derive = "0"
+bimap = "0.6.2"
+bitvec = "1.0.1"
+fancy-regex = "0.10.0"
+hex = "0.4.3"
+itertools = "0.10.5"
+lazy_static = "1.4.0"
+maplit = "1.0.2"
+modinverse = "0.1.1"
+ndarray = "0.15.6"
+num = "0.4.0"
+num-derive = "0.3.3"
+num-traits = "0.2.15"
+ordered-float = "3.4.0"
+pathfinding = "3.0.14"
+priority-queue = "1.3.0"
+rand = "0.8.5"
+rangemap = "1.1.0"
+rayon = "1.6.0"
+regex = "1.7.0"
+ring-algorithm = "0.6.0"
+serde_json = "1.0.69"
+sscanf = "0.4.0"
+strum = "0.24.1"
+strum_macros = "0.24.3"
+termion = "2.0.1"
+vecmat = "0.7.8"
+z3 = "0.11.2"
+
+[dependencies.xaoc]
+path = "../xaoc"
+
+[features]
