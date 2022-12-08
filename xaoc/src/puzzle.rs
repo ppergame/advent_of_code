@@ -1,5 +1,5 @@
 use crate::auth::{current_token, Token};
-use crate::runner::local_year;
+use crate::runner::year;
 use crate::{client, setup_dir, Day, Part, Year};
 use anyhow::{anyhow, bail, Context, Result};
 use regex::Regex;
@@ -235,7 +235,7 @@ pub enum AnswerStatus {
 }
 
 pub fn submit(day: u16, part: u16, res: &str) -> Result<()> {
-    let year = local_year()?;
+    let year = year()?;
     let token = current_token()?;
     let run = Run::new(token, year, Day(day), Part::new(part)?)?;
     run.submit(res)?;

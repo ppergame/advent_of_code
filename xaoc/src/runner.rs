@@ -3,8 +3,8 @@ use crate::puzzle::{AnswerStatus, Run};
 use crate::{Day, Part, Year};
 use anyhow::{anyhow, bail, Context, Result};
 use colored::Colorize;
+use itertools::Itertools;
 use regex::Regex;
-use serde::Deserialize;
 use std::fmt::Display;
 use std::io::Write;
 use std::os::unix::prelude::PermissionsExt;
@@ -15,21 +15,19 @@ use std::time::Instant;
 lazy_static::lazy_static! {
     static ref EXE_RE: Regex = Regex::new(r"^(\d{4})_(\d{1,2})$").unwrap();
     static ref CODE_RE: Regex = Regex::new(r"(?s)<code>(.+?)</code>").unwrap();
+    static ref AOC_YEAR_RE: Regex = Regex::new(r"^aoc(20\d\d)$").unwrap();
 }
 
-#[derive(Deserialize)]
-struct Xaoc {
-    year: u16,
-}
-
-pub fn year(inp: &[u8]) -> Result<Year> {
-    let xaoc: Xaoc = serde_json::from_slice(inp).context("parse xaoc.json")?;
-    Ok(Year(xaoc.year))
-}
-
-pub fn local_year() -> Result<Year> {
-    let inp = std::fs::read("xaoc.json").context("read xaoc.json")?;
-    year(&inp)
+pub fn year() -> Result<Year> {
+    let path = std::env::current_dir()?;
+    for (aoc_year, aoc) in path.iter().rev().tuple_windows() {
+        if aoc == "aoc" {
+            if let Some(cap) = AOC_YEAR_RE.captures(&aoc_year.to_string_lossy()) {
+                return Ok(Year(cap[1].parse()?));
+            }
+        }
+    }
+    bail!("run me in aoc/aoc20??");
 }
 
 pub fn parse_day(file: &str) -> Day {
@@ -53,7 +51,7 @@ macro_rules! xaoc {
         use anyhow::Result;
 
         fn main() -> Result<()> {
-            let year = xaoc::runner::year(include_bytes!("../../xaoc.json"))?;
+            let year = xaoc::runner::year()?;
             let day = xaoc::runner::parse_day(std::file!());
             let mut opts = xaoc::runner::RunOptions::default();
             $(
@@ -198,7 +196,7 @@ where
 }
 
 pub fn prepare(day: Day) -> Result<()> {
-    let year = local_year()?;
+    let year = year()?;
     let token = current_token()?;
     let run = Run::new(token, year, day, Part::One)?;
     let code = PathBuf::from(format!("src/bin/{year}_{day}.rs"));
@@ -217,7 +215,7 @@ pub fn prepare(day: Day) -> Result<()> {
 }
 
 pub fn run_all(debug: bool) -> Result<()> {
-    let year = local_year()?;
+    let year = year()?;
     let mut cmd = Command::new("cargo");
     cmd.arg("build");
     if !debug {
