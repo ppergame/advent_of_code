@@ -11,9 +11,9 @@ struct Names {
 }
 
 impl Names {
-    fn idx(&self, name: &str) -> usize {
-        *self.names.get_by_left(name).unwrap()
-    }
+    // fn idx(&self, name: &str) -> usize {
+    //     *self.names.get_by_left(name).unwrap()
+    // }
 
     fn name(&self, idx: usize) -> &str {
         self.names.get_by_right(&idx).unwrap()

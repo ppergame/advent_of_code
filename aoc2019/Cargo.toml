@@ -34,6 +34,7 @@ strum_macros = "0.24.3"
 termion = "2.0.1"
 vecmat = "0.7.8"
 z3 = "0.11.2"
+colored = "2.0.0"
 
 [dependencies.xaoc]
 path = "../xaoc"
