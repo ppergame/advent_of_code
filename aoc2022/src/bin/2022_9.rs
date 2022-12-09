@@ -7,14 +7,13 @@ lazy_static::lazy_static! {
         ('R', (0, 1)), ('U', (-1, 0)), ('L', (0, -1)), ('D', (1, 0))]);
 }
 
-fn catch_up(mut tail: (i64, i64), head: (i64, i64)) -> (i64, i64) {
+fn catch_up(tail: (i64, i64), head: (i64, i64)) -> (i64, i64) {
     let (tdr, tdc) = (head.0 - tail.0, head.1 - tail.1);
-    let tdrs = tdr.signum();
-    let tdcs = tdc.signum();
     if tdr.abs() > 1 || tdc.abs() > 1 {
-        tail = (tail.0 + tdrs, tail.1 + tdcs);
+        (tail.0 + tdr.signum(), tail.1 + tdc.signum())
+    } else {
+        tail
     }
-    tail
 }
 
 fn part1(inp: &str) -> usize {
