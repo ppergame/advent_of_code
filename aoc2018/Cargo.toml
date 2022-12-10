@@ -35,6 +35,9 @@ termion = "2.0.1"
 vecmat = "0.7.8"
 z3 = "0.11.2"
 colored = "2.0.0"
+num-integer = "0.1.45"
+array2d = "0.3.0"
+primal-sieve = "0.3.5"
 
 [dependencies.xaoc]
 path = "../xaoc"

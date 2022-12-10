@@ -2,7 +2,7 @@ fn part1(inp: &str) -> i64 {
     let inp = inp.parse::<usize>().unwrap();
     let mut buf = vec![0];
     let mut pos = 0;
-    for i in 1..=200 {
+    for i in 1..=2017 {
         pos = (pos + inp) % buf.len();
         buf.insert(pos + 1, i);
         pos += 1;

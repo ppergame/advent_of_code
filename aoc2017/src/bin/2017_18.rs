@@ -1,6 +1,5 @@
-use std::collections::{HashMap, VecDeque};
-
 use sscanf::scanf;
+use std::collections::{HashMap, VecDeque};
 
 type Reg = char;
 
