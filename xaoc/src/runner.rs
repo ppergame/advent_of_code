@@ -80,8 +80,42 @@ struct Cli {
 #[derive(Default)]
 pub struct RunOptions {
     pub sample_idx: usize,
+    pub sample_idx2: Option<usize>,
     pub sample: &'static str,
+    pub sample2: &'static str,
     pub no_sample: bool,
+}
+
+impl RunOptions {
+    pub fn sample_idx(&mut self, sample_idx: usize) {
+        self.sample_idx = sample_idx;
+    }
+
+    pub fn sample_idx2(&mut self, sample_idx2: usize) {
+        self.sample_idx2 = Some(sample_idx2);
+    }
+
+    pub fn sample(&mut self, sample: &'static str) {
+        self.sample = sample;
+    }
+
+    pub fn sample2(&mut self, sample2: &'static str) {
+        self.sample2 = sample2;
+    }
+
+    pub fn no_sample(&mut self, no_sample: bool) {
+        self.no_sample = no_sample;
+    }
+}
+
+fn get_sample(text: &str, idx: usize) -> Option<String> {
+    let mut s = String::new();
+    let cap = CODE_RE.captures_iter(text).nth(idx)?;
+    html_escape::decode_html_entities_to_string(
+        cap.get(1)?.as_str().trim_end_matches('\n'),
+        &mut s,
+    );
+    Some(s)
 }
 
 pub fn run<F1, D1, F2, D2>(
@@ -120,33 +154,40 @@ where
                 println!("skipping sample");
                 return;
             }
-            let mut s = String::new();
-            let input = if !opts.sample.is_empty() {
-                opts.sample
+            let input_p1 = if !opts.sample.is_empty() {
+                opts.sample.to_string()
+            } else if let Some(input_p1) = get_sample(&puzzle.text, opts.sample_idx) {
+                input_p1
             } else {
-                let Some(cap) = CODE_RE.captures_iter(&puzzle.text).nth(opts.sample_idx) else {
-                    println!("no sample code at index {}", opts.sample_idx);
-                    return;
-                };
-                html_escape::decode_html_entities_to_string(
-                    cap.get(1).unwrap().as_str().trim_end_matches('\n'),
-                    &mut s,
-                )
+                println!("no p1 input");
+                return;
             };
-            println!(
-                "{}",
-                format!("using sample code index {}:", opts.sample_idx)
-                    .red()
-                    .bold()
-            );
-            println!("{input}");
+            let input_p2 = if !opts.sample2.is_empty() {
+                opts.sample2.to_string()
+            } else if let Some(sample_idx2) = opts.sample_idx2 {
+                match get_sample(&puzzle.text, sample_idx2) {
+                    Some(i) => i,
+                    None => {
+                        println!("no p2 input");
+                        return;
+                    }
+                }
+            } else {
+                input_p1.to_string()
+            };
             if p1 {
+                println!("{}", "input:".red().bold());
+                println!("{input_p1}");
                 println!("{}", "part 1:".red().bold());
-                println!("{}", part1(input));
+                println!("{}", part1(&input_p1));
             }
             if p2 {
+                if !p1 || input_p2 != input_p1 {
+                    println!("{}", "part 2 input:".red().bold());
+                    println!("{input_p2}");
+                }
                 println!("{}", "part 2:".red().bold());
-                println!("{}", part2(input));
+                println!("{}", part2(&input_p2));
             }
         })();
     }
