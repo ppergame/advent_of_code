@@ -38,6 +38,7 @@ num-integer = "0.1.45"
 array2d = "0.3.0"
 primal-sieve = "0.3.5"
 counter = "0.5.7"
+num-traits = "0.2.15"
 
 [dependencies.xaoc]
 path = "../xaoc"

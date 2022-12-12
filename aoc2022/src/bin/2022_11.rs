@@ -1,7 +1,6 @@
-use std::collections::HashMap;
-
 use sscanf::scanf;
 
+#[derive(Clone)]
 enum Oper {
     Old,
     Num(i64),
@@ -28,6 +27,7 @@ impl Oper {
     }
 }
 
+#[derive(Clone)]
 struct Monkey {
     items: Vec<i64>,
     op: char,
@@ -36,6 +36,15 @@ struct Monkey {
     throw_true: usize,
     throw_false: usize,
     inspect_count: usize,
+}
+
+impl Monkey {
+    fn take(&mut self) -> Self {
+        let items = std::mem::take(&mut self.items);
+        let mut ret = self.clone();
+        ret.items = items;
+        ret
+    }
 }
 
 fn parse(inp: &str) -> (i64, Vec<Monkey>) {
@@ -80,25 +89,26 @@ fn parse(inp: &str) -> (i64, Vec<Monkey>) {
     (divisor, monkeys)
 }
 
-fn part1(inp: &str) -> usize {
-    let (_, mut monkeys) = parse(inp);
-    for _round in 0..20 {
+fn run(inp: &str, part1: bool) -> usize {
+    let (divisor, mut monkeys) = parse(inp);
+    for _round in 0..if part1 { 20 } else { 10000 } {
         for cur in 0..monkeys.len() {
-            let cur = &mut monkeys[cur];
-            let mut dispatch = HashMap::<usize, Vec<i64>>::new();
-            for item in cur.items.drain(..) {
-                cur.inspect_count += 1;
-                let item = cur.oper.apply(cur.op, item) / 3;
-                let dest = if item % cur.div_oper == 0 {
-                    cur.throw_true
+            let mut monkey = monkeys[cur].take();
+            for item in monkey.items.drain(..) {
+                monkey.inspect_count += 1;
+                let item = if part1 {
+                    monkey.oper.apply(monkey.op, item) / 3
                 } else {
-                    cur.throw_false
+                    monkey.oper.apply(monkey.op, item) % divisor
                 };
-                dispatch.entry(dest).or_default().push(item);
+                let dest = if item % monkey.div_oper == 0 {
+                    monkey.throw_true
+                } else {
+                    monkey.throw_false
+                };
+                monkeys[dest].items.push(item);
             }
-            for (dest, items) in dispatch {
-                monkeys[dest].items.extend(items);
-            }
+            monkeys[cur].inspect_count = monkey.inspect_count;
         }
     }
     let mut ic = monkeys
@@ -110,34 +120,12 @@ fn part1(inp: &str) -> usize {
     ic[0] * ic[1]
 }
 
+fn part1(inp: &str) -> usize {
+    run(inp, true)
+}
+
 fn part2(inp: &str) -> usize {
-    let (divisor, mut monkeys) = parse(inp);
-    for _round in 1..=10000 {
-        for i in 0..monkeys.len() {
-            let cur = &mut monkeys[i];
-            let mut dispatch = HashMap::<usize, Vec<i64>>::new();
-            for item in cur.items.drain(..) {
-                cur.inspect_count += 1;
-                let item = cur.oper.apply(cur.op, item) % divisor;
-                let dest = if item % cur.div_oper == 0 {
-                    cur.throw_true
-                } else {
-                    cur.throw_false
-                };
-                dispatch.entry(dest).or_default().push(item);
-            }
-            for (dest, items) in dispatch {
-                monkeys[dest].items.extend(items);
-            }
-        }
-    }
-    let mut ic = monkeys
-        .iter()
-        .map(|cur| cur.inspect_count)
-        .collect::<Vec<_>>();
-    ic.sort();
-    ic.reverse();
-    ic[0] * ic[1]
+    run(inp, false)
 }
 
 xaoc::xaoc!();
