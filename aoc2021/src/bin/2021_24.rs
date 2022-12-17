@@ -102,7 +102,7 @@ fn reverse_values<const CHECK: bool>(prog: &Prog, z_val: i64) -> Vec<(i64, i64)>
     ret.into_iter().sorted().collect::<Vec<_>>()
 }
 
-fn part1(inp: &str) -> String {
+fn part1(inp: &str) -> i64 {
     let inp = parse(inp);
     let (_, cost) = dijkstra(
         &(14, 0),
@@ -118,10 +118,10 @@ fn part1(inp: &str) -> String {
         |goal| goal == &(0, 0),
     )
     .unwrap();
-    (-cost).to_string()
+    -cost
 }
 
-fn part2(inp: &str) -> String {
+fn part2(inp: &str) -> i64 {
     let inp = parse(inp);
     let (_, cost) = dijkstra(
         &(14, 0),
@@ -137,7 +137,7 @@ fn part2(inp: &str) -> String {
         |goal| goal == &(0, 0),
     )
     .unwrap();
-    cost.to_string()
+    cost
 }
 
-xaoc::xaoc!();
+xaoc::xaoc!(no_sample = true);
