@@ -39,6 +39,9 @@ array2d = "0.3.0"
 primal-sieve = "0.3.5"
 counter = "0.5.7"
 num-traits = "0.2.15"
+primes = "0.3.0"
+petgraph = "0.6.2"
+bitmaps = "3.2.0"
 
 [dependencies.xaoc]
 path = "../xaoc"
