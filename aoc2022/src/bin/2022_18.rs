@@ -3,14 +3,14 @@ use sscanf::scanf;
 use std::collections::HashSet;
 
 fn adj((x, y, z): (i64, i64, i64)) -> Vec<(i64, i64, i64)> {
-    let mut ret = vec![];
-    ret.push((x + 1, y, z));
-    ret.push((x - 1, y, z));
-    ret.push((x, y + 1, z));
-    ret.push((x, y - 1, z));
-    ret.push((x, y, z + 1));
-    ret.push((x, y, z - 1));
-    ret
+    vec![
+        (x - 1, y, z),
+        (x + 1, y, z),
+        (x, y - 1, z),
+        (x, y + 1, z),
+        (x, y, z - 1),
+        (x, y, z + 1),
+    ]
 }
 
 fn part1(inp: &str) -> i64 {

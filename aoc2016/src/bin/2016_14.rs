@@ -23,7 +23,7 @@ impl Reps {
         (self.next..after)
             .into_par_iter()
             .map(|i| {
-                let mut digest = md5(&format!("{}{}", self.salt, i));
+                let mut digest = md5(format!("{}{}", self.salt, i));
                 let mut hex: [u8; 32] = [0; 32];
                 for _ in 0..self.stretch {
                     for (i, b) in digest.as_slice().iter().enumerate() {

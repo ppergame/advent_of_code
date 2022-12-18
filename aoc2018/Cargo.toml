@@ -42,6 +42,8 @@ num-traits = "0.2.15"
 primes = "0.3.0"
 petgraph = "0.6.2"
 bitmaps = "3.2.0"
+wasmtime = "3.0.1"
+wasm-encoder = "0.20.0"
 
 [dependencies.xaoc]
 path = "../xaoc"

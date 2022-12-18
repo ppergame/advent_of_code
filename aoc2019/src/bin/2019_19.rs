@@ -14,7 +14,7 @@ fn part1(inp: &str) -> usize {
     for row in 0..50 {
         for col in 0..50 {
             let res = at(col, row, &prog);
-            map.insert((col as u64, row as u64), res);
+            map.insert((col, row), res);
             // print!("{}", if res { '#' } else { '.' });
         }
         // println!();
