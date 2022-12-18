@@ -44,6 +44,7 @@ petgraph = "0.6.2"
 bitmaps = "3.2.0"
 wasmtime = "3.0.1"
 wasm-encoder = "0.20.0"
+duplicate = "0.4.1"
 
 [dependencies.xaoc]
 path = "../xaoc"

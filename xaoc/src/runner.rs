@@ -75,6 +75,9 @@ struct Cli {
 
     #[arg(long)]
     dev: bool,
+
+    #[arg(long)]
+    input_file: Option<PathBuf>,
 }
 
 #[derive(Default)]
@@ -142,7 +145,13 @@ where
     let token = crate::auth::current_token().context("get token")?;
     let run = Run::new(token.clone(), year, day, Part::One)?;
     let puzzle = run.get_puzzle().context("get puzzle")?;
-    let input = run.get_input().context("get input")?;
+    let input = if let Some(path) = cli.input_file {
+        let s = String::from_utf8(std::fs::read(path)?)?;
+        let s = s.trim_end_matches('\n');
+        s.to_string()
+    } else {
+        run.get_input().context("get input")?
+    };
     println!("{}", puzzle.title.green().bold());
     if cli.dev {
         (|| {
@@ -215,10 +224,10 @@ where
             } else {
                 ""
             };
-            print!("part {n}({time}ms){ml_s}");
+            let mut out = String::new();
+            out.push_str(&format!("part {n}({time}ms){ml_s}"));
             if ml {
-                println!();
-                println!("{res}");
+                out.push_str(&format!("\n{res}\n"));
             } else {
                 let run = Run::new(token.clone(), year, day, Part::new(n)?)?;
                 let sym = match run.check_answer(&res)? {
@@ -226,8 +235,9 @@ where
                     AnswerStatus::Bad => "❌",
                     AnswerStatus::Unknown => "❓",
                 };
-                print!(" {sym} [ {res} ]");
+                out.push_str(&format!(" {sym} [ {res} ]"));
             }
+            print!("{out:<40}");
             let _ = std::io::stdout().flush();
         }
         print!("\t\t\t\t");

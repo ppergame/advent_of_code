@@ -88,6 +88,7 @@ dependencies = [
  "bitvec",
  "colored",
  "counter",
+ "duplicate",
  "fancy-regex",
  "hex",
  "itertools",
@@ -135,6 +136,7 @@ dependencies = [
  "bitvec",
  "colored",
  "counter",
+ "duplicate",
  "fancy-regex",
  "hex",
  "itertools",
@@ -182,6 +184,7 @@ dependencies = [
  "bitvec",
  "colored",
  "counter",
+ "duplicate",
  "fancy-regex",
  "hex",
  "itertools",
@@ -229,6 +232,7 @@ dependencies = [
  "bitvec",
  "colored",
  "counter",
+ "duplicate",
  "fancy-regex",
  "hex",
  "itertools",
@@ -276,6 +280,7 @@ dependencies = [
  "bitvec",
  "colored",
  "counter",
+ "duplicate",
  "fancy-regex",
  "hex",
  "itertools",
@@ -323,6 +328,7 @@ dependencies = [
  "bitvec",
  "colored",
  "counter",
+ "duplicate",
  "fancy-regex",
  "hex",
  "itertools",
@@ -370,6 +376,7 @@ dependencies = [
  "bitvec",
  "colored",
  "counter",
+ "duplicate",
  "fancy-regex",
  "hex",
  "itertools",
@@ -417,6 +424,7 @@ dependencies = [
  "bitvec",
  "colored",
  "counter",
+ "duplicate",
  "fancy-regex",
  "hex",
  "itertools",
@@ -1047,6 +1055,16 @@ name = "doc-comment"
 version = "0.3.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fea41bba32d969b513997752735605054bc0dfa92b4c56bf1189f2e174be7a10"
+
+[[package]]
+name = "duplicate"
+version = "0.4.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "a0a4be4cd710e92098de6ad258e6e7c24af11c29c5142f3c6f2a545652480ff8"
+dependencies = [
+ "heck",
+ "proc-macro-error",
+]
 
 [[package]]
 name = "either"
