@@ -7,9 +7,9 @@ edition = "2021"
 doctest = false
 
 [dependencies]
-anyhow = "1.0.66"
-assert_fs = "1.0.9"
-clap = { version = "4.0.27", features = ["derive"] }
+anyhow = "1.0.68"
+assert_fs = "1.0.10"
+clap = { version = "4.0.29", features = ["derive"] }
 colored = "2.0.0"
 glob = "0.3.0"
 html-escape = "0.2.12"
@@ -17,17 +17,17 @@ html2text = "0.4.4"
 itertools = "0.10.5"
 lazy_static = "1.4.0"
 md-5 = { version = "0.10.5", features = ["md5-asm", "asm"] }
-mockito = "0.31.0"
+mockito = "0.31.1"
 regex = "1.7.0"
 reqwest = { version = "0.11.13", features = ["blocking"] }
-serde = { version = "1.0.147", features = ["derive"] }
-serde_json = "1.0.89"
-sscanf = "0.3.1"
-toml = { version = "0.5.9", features = ["preserve_order"] }
+serde = { version = "1.0.151", features = ["derive"] }
+serde_json = "1.0.91"
+sscanf = "0.4.0"
+toml = { version = "0.5.10", features = ["preserve_order"] }
 uds = "0.2.6"
 whoami = "1.2.3"
 xdg = "2.4.1"
 
 [build-dependencies]
-anyhow = "1.0.66"
+anyhow = "1.0.68"
 git2 = "0.15.0"
