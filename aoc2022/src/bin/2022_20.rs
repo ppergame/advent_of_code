@@ -30,41 +30,21 @@ impl Nums {
         for cur in 0..self.0.len() {
             let item = self.0[cur];
             let val = item.val;
-            let shift = (val % (self.0.len() as i64 - 1)).abs();
-            if shift != 0 {
-                // take out of linked list
-                self.0[item.prev].next = item.next;
-                self.0[item.next].prev = item.prev;
+            // take out of linked list
+            self.0[item.prev].next = item.next;
+            self.0[item.next].prev = item.prev;
 
-                let mut pos = cur;
-                match val.signum() {
-                    1 => {
-                        for _ in 0..shift {
-                            pos = self.0[pos].next;
-                        }
-                        // adjust moved item's pointers
-                        self.0[cur].prev = pos;
-                        self.0[cur].next = self.0[pos].next;
-                        // put item into list after pos
-                        let item = self.0[cur];
-                        self.0[item.prev].next = cur;
-                        self.0[item.next].prev = cur;
-                    }
-                    -1 => {
-                        for _ in 0..shift {
-                            pos = self.0[pos].prev;
-                        }
-                        // adjust moved item's pointers
-                        self.0[cur].prev = self.0[pos].prev;
-                        self.0[cur].next = pos;
-                        // put item into list before pos
-                        let item = self.0[cur];
-                        self.0[item.prev].next = cur;
-                        self.0[item.next].prev = cur;
-                    }
-                    _ => unreachable!(),
-                }
+            let mut pos = item.prev;
+            for _ in 0..val.rem_euclid(self.0.len() as i64 - 1) {
+                pos = self.0[pos].next;
             }
+            // adjust moved item's pointers
+            self.0[cur].prev = pos;
+            self.0[cur].next = self.0[pos].next;
+            // put item into list after pos
+            let item = self.0[cur];
+            self.0[item.prev].next = cur;
+            self.0[item.next].prev = cur;
         }
     }
 
