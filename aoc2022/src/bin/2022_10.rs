@@ -32,9 +32,9 @@ fn part1(inp: &str) -> i64 {
 fn emit2(s: &mut String, reg: i64, cycle: i64) {
     let crt_pos = (cycle - 1) % 40;
     if crt_pos == reg - 1 || crt_pos == reg || crt_pos == reg + 1 {
-        s.push('#');
+        s.push('█');
     } else {
-        s.push('.');
+        s.push(' ');
     }
     if crt_pos == 39 {
         s.push('\n');
