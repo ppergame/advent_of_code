@@ -47,41 +47,10 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "2cb2f989d18dd141ab8ae82f64d1a8cdd37e0840f73a406896cf5e99502fab61"
 
 [[package]]
-name = "aoc-runner"
-version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d21ef9204ad206a5a3e918e9920da04e1118ad91ce4f23570be964b9d6b9dfcb"
-
-[[package]]
-name = "aoc-runner-derive"
-version = "0.3.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ba8b944269d3fee645d281b1335e1797044db497bb02d0098cc3fdb8900069cc"
-dependencies = [
- "aoc-runner-internal",
- "proc-macro2",
- "quote",
- "syn",
-]
-
-[[package]]
-name = "aoc-runner-internal"
-version = "0.1.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "274b0ba7f3669a45ec0aaacf94eb032a749de880ab776091576cca94037c9982"
-dependencies = [
- "serde",
- "serde_derive",
- "serde_json",
-]
-
-[[package]]
 name = "aoc2015"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "aoc-runner",
- "aoc-runner-derive",
  "array2d",
  "bimap",
  "bitmaps",
@@ -131,8 +100,6 @@ name = "aoc2016"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "aoc-runner",
- "aoc-runner-derive",
  "array2d",
  "bimap",
  "bitmaps",
@@ -182,8 +149,6 @@ name = "aoc2017"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "aoc-runner",
- "aoc-runner-derive",
  "array2d",
  "bimap",
  "bitmaps",
@@ -233,8 +198,6 @@ name = "aoc2018"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "aoc-runner",
- "aoc-runner-derive",
  "array2d",
  "bimap",
  "bitmaps",
@@ -284,8 +247,6 @@ name = "aoc2019"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "aoc-runner",
- "aoc-runner-derive",
  "array2d",
  "bimap",
  "bitmaps",
@@ -335,8 +296,6 @@ name = "aoc2020"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "aoc-runner",
- "aoc-runner-derive",
  "array2d",
  "bimap",
  "bitmaps",
@@ -386,8 +345,6 @@ name = "aoc2021"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "aoc-runner",
- "aoc-runner-derive",
  "array2d",
  "bimap",
  "bitmaps",
@@ -437,8 +394,6 @@ name = "aoc2022"
 version = "0.1.0"
 dependencies = [
  "anyhow",
- "aoc-runner",
- "aoc-runner-derive",
  "array2d",
  "bimap",
  "bitmaps",

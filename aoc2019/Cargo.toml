@@ -5,8 +5,6 @@ edition = "2018"
 
 [dependencies]
 anyhow = "1.0.68"
-aoc-runner = "0"
-aoc-runner-derive = "0"
 bimap = "0.6.2"
 bitvec = "1.0.1"
 fancy-regex = "0.10.0"
