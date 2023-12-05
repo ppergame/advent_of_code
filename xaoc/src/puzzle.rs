@@ -32,7 +32,7 @@ pub struct Run {
 
 impl Run {
     pub fn new(token: Token, year: Year, day: Day, part: Part) -> Result<Self> {
-        if !(2015..=2022).contains(&year.0) {
+        if !(2015..=2023).contains(&year.0) {
             bail!("bad year {year}");
         }
         if !(1..=25).contains(&day.0) {
@@ -136,7 +136,7 @@ impl Run {
         Ok(path)
     }
 
-    fn get_answer(&self) -> Result<String> {
+    pub fn get_answer(&self) -> Result<String> {
         let s = String::from_utf8(std::fs::read(self.answer_path()?)?)?;
         Ok(s)
     }
@@ -220,7 +220,7 @@ impl Run {
         Ok(())
     }
 
-    fn set_answer(&self, res: &str) -> Result<()> {
+    pub fn set_answer(&self, res: &str) -> Result<()> {
         let path = self.answer_path()?;
         create_dir_all(path.parent().unwrap())?;
         std::fs::write(path, res)?;

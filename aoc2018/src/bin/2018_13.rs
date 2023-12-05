@@ -228,8 +228,16 @@ impl Map {
 
     #[allow(dead_code)]
     fn print(&self) {
-        let MinMaxResult::MinMax(minr, maxr) = self.map.keys().map(|(row, _)| row).copied().minmax() else { unreachable!() };
-        let MinMaxResult::MinMax(minc, maxc) = self.map.keys().map(|(_, col)| col).copied().minmax() else { unreachable!() };
+        let MinMaxResult::MinMax(minr, maxr) =
+            self.map.keys().map(|(row, _)| row).copied().minmax()
+        else {
+            unreachable!()
+        };
+        let MinMaxResult::MinMax(minc, maxc) =
+            self.map.keys().map(|(_, col)| col).copied().minmax()
+        else {
+            unreachable!()
+        };
         for row in minr..=maxr {
             for col in minc..=maxc {
                 let c = match self.carts.get(&(row, col)) {
@@ -268,17 +276,17 @@ fn part2(inp: &str) -> String {
 }
 
 xaoc::xaoc!(
-    sample = r#"/->-\        
+    sample = r"/->-\        
 |   |  /----\
 | /-+--+-\  |
 | | |  | v  |
 \-+-/  \-+--/
-  \------/"#,
-    sample2 = r#"/>-<\  
+  \------/",
+    sample2 = r"/>-<\  
 |   |  
 | /<+-\
 | | | v
 \>+</ |
   |   ^
-  \<->/"#
+  \<->/"
 );

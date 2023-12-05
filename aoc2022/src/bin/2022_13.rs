@@ -31,7 +31,7 @@ fn _parse(inp: &mut Peekable<impl Iterator<Item = char>>) -> Item {
         }
         d @ '0'..='9' => {
             let mut acc = d.to_digit(10).unwrap();
-            while ('0'..='9').contains(inp.peek().unwrap()) {
+            while inp.peek().unwrap().is_ascii_digit() {
                 acc *= 10;
                 acc += inp.next().unwrap().to_digit(10).unwrap();
             }

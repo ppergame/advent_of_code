@@ -67,8 +67,16 @@ struct Map {
 impl Map {
     #[allow(dead_code)]
     fn print(&self) {
-        let MinMaxResult::MinMax(minr, maxr) = self.map.iter().map(|(row, _)| row).copied().minmax() else { unreachable!() };
-        let MinMaxResult::MinMax(minc, maxc) = self.map.iter().map(|(_, col)| col).copied().minmax() else { unreachable!() };
+        let MinMaxResult::MinMax(minr, maxr) =
+            self.map.iter().map(|(row, _)| row).copied().minmax()
+        else {
+            unreachable!()
+        };
+        let MinMaxResult::MinMax(minc, maxc) =
+            self.map.iter().map(|(_, col)| col).copied().minmax()
+        else {
+            unreachable!()
+        };
         for row in minr..=maxr {
             let mut uline = vec![];
             for col in minc..=maxc {
@@ -115,13 +123,17 @@ impl Map {
         let move_order = self.units.keys().copied().sorted().collect_vec();
         for (mut row, mut col) in move_order {
             // eprintln!("moving {row} {col}");
-            let Some(my_unit) = self.units.get(&(row, col)).cloned() else { continue };
+            let Some(my_unit) = self.units.get(&(row, col)).cloned() else {
+                continue;
+            };
             if !self.units.contains_key(&(row, col)) {
                 continue;
             }
             // move phase
             if self.target(row, col, &my_unit).is_none() {
-                let Some(target_adj) = self.all_target_adj(&my_unit) else { return false };
+                let Some(target_adj) = self.all_target_adj(&my_unit) else {
+                    return false;
+                };
                 if let Some((_, (next, _))) =
                     bfs_set_second(&(row, col), |&(row, col)| self.succ(row, col), target_adj)
                         .into_iter()
@@ -136,8 +148,11 @@ impl Map {
             if let Some((_, (trow, tcol))) = self.target(row, col, &my_unit) {
                 // attack phase
                 let std::collections::hash_map::Entry::Occupied(mut o) =
-                        self.units.entry((trow, tcol)) else { unreachable!() };
-                let mut unit = o.get_mut();
+                    self.units.entry((trow, tcol))
+                else {
+                    unreachable!()
+                };
+                let unit = o.get_mut();
                 let power = if my_unit.side == 'E' {
                     self.elf_power
                 } else {

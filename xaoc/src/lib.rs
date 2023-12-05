@@ -19,10 +19,7 @@ pub fn md5(
 
 pub fn client() -> Result<Client> {
     let mut headers = HeaderMap::new();
-    headers.insert(
-        USER_AGENT,
-        format!("xaoc by {}", env!("GIT_EMAIL")).parse()?,
-    );
+    headers.insert(USER_AGENT, "xaoc by ppergame@gmail.com".parse()?);
     let client = Client::builder().default_headers(headers).build()?;
     Ok(client)
 }

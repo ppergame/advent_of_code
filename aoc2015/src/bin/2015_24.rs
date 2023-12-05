@@ -14,7 +14,7 @@ impl AddUpTo {
     }
 
     fn entry(&mut self, goal: usize, offset: usize) -> &mut HashSet<Vec<usize>> {
-        self.memo.entry((goal, offset)).or_insert_with(HashSet::new)
+        self.memo.entry((goal, offset)).or_default()
     }
 
     fn calc(&mut self, goal: usize, offset: usize) {

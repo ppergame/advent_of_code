@@ -130,9 +130,7 @@ impl Tiles {
             let mut by = HashMap::<usize, Vec<Cell>>::new();
             for (tile, &flip, rot) in iproduct!(self.tiles.values(), &[false, true], 0..=3) {
                 let cell = tile.flip(flip, rot);
-                by.entry(cell.edges[side.to_idx()])
-                    .or_insert_with(Vec::new)
-                    .push(cell);
+                by.entry(cell.edges[side.to_idx()]).or_default().push(cell);
             }
             by
         };

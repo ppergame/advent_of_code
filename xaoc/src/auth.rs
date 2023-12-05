@@ -201,8 +201,10 @@ mod tests {
     #[test]
     fn add() -> Result<()> {
         let base = TempDir::new()?;
-        let base_url = &mockito::server_url();
-        let _m = mockito::mock("GET", "/2015/settings")
+        let mut server = mockito::Server::new();
+        let base_url = &server.url();
+        let _m = server
+            .mock("GET", "/2015/settings")
             .with_status(200)
             .with_body(include_bytes!("../fixtures/settings_good.html"))
             .create();
@@ -214,7 +216,8 @@ mod tests {
                 vec![Token::new(2279184, "John Kent", "F111", true)]
             );
         }
-        let _m = mockito::mock("GET", "/2015/settings")
+        let _m = server
+            .mock("GET", "/2015/settings")
             .with_status(200)
             .with_body(include_bytes!("../fixtures/settings_good_new_name.html"))
             .create();

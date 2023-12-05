@@ -131,8 +131,8 @@ fn part2(inp: &str) -> i64 {
             .collect::<Vec<_>>();
         let missing = children
             .iter()
+            .filter(|&ch| !memo.contains_key(ch))
             .cloned()
-            .filter(|ch| !memo.contains_key(ch))
             .collect::<Vec<_>>();
         if !missing.is_empty() {
             stack.push(game);

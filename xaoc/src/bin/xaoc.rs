@@ -36,6 +36,10 @@ enum Commands {
     },
     FixDeps,
     FixUse,
+    SyncAnswers {
+        #[clap(long)]
+        force: bool,
+    },
 }
 
 #[derive(Args, Debug)]
@@ -91,6 +95,7 @@ fn main() -> Result<()> {
         Commands::Unmap => puzzle::unmap()?,
         Commands::FixUse => fix_use()?,
         Commands::FixDeps => fix_deps()?,
+        Commands::SyncAnswers { force } => runner::sync_answers(force)?,
     }
     Ok(())
 }

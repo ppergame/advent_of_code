@@ -2,7 +2,7 @@ use std::collections::HashSet;
 
 fn count_unique(s: &str) -> usize {
     s.chars()
-        .filter(|x| ('a'..='z').contains(x))
+        .filter(|x| x.is_ascii_lowercase())
         .collect::<HashSet<_>>()
         .len()
 }

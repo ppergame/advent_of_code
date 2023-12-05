@@ -1,10 +1,11 @@
 use crate::auth::current_token;
 use crate::puzzle::{AnswerStatus, Run};
-use crate::{Day, Part, Year};
+use crate::{client, Day, Part, Year};
 use anyhow::{anyhow, bail, Context, Result};
 use colored::Colorize;
 use itertools::Itertools;
 use regex::Regex;
+use reqwest::header::COOKIE;
 use std::fmt::Display;
 use std::io::Write;
 use std::os::unix::prelude::PermissionsExt;
@@ -16,6 +17,7 @@ lazy_static::lazy_static! {
     static ref EXE_RE: Regex = Regex::new(r"^(\d{4})_(\d{1,2})$").unwrap();
     static ref CODE_RE: Regex = Regex::new(r"(?s)<code>(.+?)</code>").unwrap();
     static ref AOC_YEAR_RE: Regex = Regex::new(r"^aoc(20\d\d)$").unwrap();
+    static ref ANSWER_RE: Regex = Regex::new(r"Your puzzle answer was <code>(.+?)</code>").unwrap();
 }
 
 pub fn year() -> Result<Year> {
@@ -265,6 +267,54 @@ pub fn prepare(day: Day) -> Result<()> {
     Ok(())
 }
 
+pub fn sync_answers(force: bool) -> Result<()> {
+    let year = year()?;
+    let token = current_token()?;
+    println!("syncing answers for year {year}");
+    for day in 1..=25 {
+        println!("day {day} ");
+        let mut answers = vec![];
+        for part in 1..=2 {
+            print!("  part {part}: ");
+            let run = Run::new(token.clone(), year, Day(day), Part::new(part)?)?;
+            if run.get_answer().is_ok() && !force {
+                println!("already exists, skipping");
+                continue;
+            }
+            if answers.is_empty() {
+                let client = client()?;
+                let page = client
+                    .get(format!("https://adventofcode.com/{year}/day/{day}"))
+                    .header(COOKIE, format!("session={}", token.token))
+                    .send()?
+                    .error_for_status()?
+                    .text()?;
+                answers = ANSWER_RE
+                    .captures_iter(&page)
+                    .map(|cap| html_escape::decode_html_entities(&cap[1]).into_owned())
+                    .collect::<Vec<_>>();
+                if answers.is_empty() {
+                    println!("no answers on puzzle page");
+                    break;
+                }
+            }
+            let Some(answer) = answers.get(part as usize - 1) else {
+                println!("no answer");
+                break;
+            };
+            match run.check_answer(answer)? {
+                AnswerStatus::Good => println!("good"),
+                AnswerStatus::Bad => bail!("bad {answer}"),
+                AnswerStatus::Unknown => {
+                    run.set_answer(answer)?;
+                    println!("updated");
+                }
+            }
+        }
+    }
+    Ok(())
+}
+
 pub fn run_all(debug: bool) -> Result<()> {
     let year = year()?;
     let mut cmd = Command::new("cargo");
@@ -277,9 +327,9 @@ pub fn run_all(debug: bool) -> Result<()> {
     }
 
     let base = if debug {
-        Path::new("../target/debug/")
+        Path::new("target/debug/")
     } else {
-        Path::new("../target/release/")
+        Path::new("target/release/")
     };
 
     let mut present = vec![];

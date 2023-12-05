@@ -9,7 +9,7 @@ use wasm_encoder::{
 };
 
 pub fn emit(callbacks: impl IntoIterator<Item = i64>, prog: &[Instr], ip_reg: usize) -> Vec<u8> {
-    let callbacks = HashSet::<i64>::from_iter(callbacks.into_iter());
+    let callbacks = HashSet::<i64>::from_iter(callbacks);
     let mut module = Module::new();
 
     let mut types = TypeSection::new();

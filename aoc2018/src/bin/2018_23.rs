@@ -211,7 +211,7 @@ impl Item {
                 maxs.dim = maxs.dim.max(bot.max.dim);
             }
         }
-        let splits = vec![Region {
+        let splits = [Region {
             min: Coord4::from(mins),
             max: Coord4::from(maxs),
         }];

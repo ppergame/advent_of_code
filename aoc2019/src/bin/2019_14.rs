@@ -58,9 +58,7 @@ where
     for (output_name, reaction) in &reactions {
         let rcount = z3::ast::Int::new_const(ctx, format!("rcount_{}", output_name));
         for (input_name, input_count) in &reaction.inputs {
-            let used_vec = used_terms
-                .entry(input_name.to_string())
-                .or_insert_with(Vec::new);
+            let used_vec = used_terms.entry(input_name.to_string()).or_default();
             let term =
                 z3::ast::Int::mul(ctx, &[&rcount, &z3::ast::Int::from_u64(ctx, *input_count)]);
             used_vec.push(term);

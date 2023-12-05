@@ -37,7 +37,6 @@ fn part1(inp: &str) -> i32 {
     let mut common = s1
         .intersection(&s2)
         .map(|(x, y)| x.abs() + y.abs())
-        .into_iter()
         .collect::<Vec<i32>>();
     common.sort_unstable();
     common[0]

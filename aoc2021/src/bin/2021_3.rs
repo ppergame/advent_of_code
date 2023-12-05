@@ -4,8 +4,7 @@ fn parse(inp: &str) -> Vec<String> {
 
 fn part1(inp: &str) -> i64 {
     let lines = parse(inp);
-    let mut count1s = vec![];
-    count1s.resize(lines[0].len(), 0);
+    let mut count1s = vec![0; lines[0].len()];
     for line in lines {
         for (idx, c) in line.chars().enumerate() {
             if c == '1' {
@@ -25,8 +24,7 @@ fn part1(inp: &str) -> i64 {
 }
 
 fn count1s(lines: &[&[u8]]) -> Vec<usize> {
-    let mut count1s = vec![];
-    count1s.resize(lines[0].len(), 0);
+    let mut count1s = vec![0; lines[0].len()];
     for line in lines {
         for (idx, b) in line.iter().enumerate() {
             if *b == b'1' {

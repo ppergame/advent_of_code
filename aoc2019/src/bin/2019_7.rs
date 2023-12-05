@@ -36,7 +36,7 @@ fn part2(inp: &str) -> i64 {
         let mut val = 0;
         let mut last_thrust = 0;
         'outer: loop {
-            for (idx, mut ic) in ics.iter_mut().enumerate() {
+            for (idx, ic) in ics.iter_mut().enumerate() {
                 match ic.run().unwrap() {
                     IntcodeStatus::Input => (),
                     IntcodeStatus::Halt => break 'outer,
