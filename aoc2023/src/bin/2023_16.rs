@@ -90,13 +90,9 @@ impl Beam {
 }
 
 #[derive(Debug, Clone)]
-struct State {
-    map: Array2<Tile>,
-    lit: HashSet<(i64, i64)>,
-    seen: HashSet<Beam>,
-}
+struct Map(Array2<Tile>);
 
-impl State {
+impl Map {
     fn parse(inp: &str) -> Self {
         let width = inp.lines().next().unwrap().chars().count();
         let mut map = Array2::default((0, width));
@@ -118,50 +114,50 @@ impl State {
             )
             .unwrap();
         }
-        State {
-            map,
-            lit: HashSet::new(),
-            seen: HashSet::new(),
-        }
+        Map(map)
     }
 
-    fn handle(&mut self, mut beam: Beam) {
-        loop {
-            if self.seen.contains(&beam) || !self.h(&beam) {
-                return;
+    fn handle(&self, initial: Beam) -> usize {
+        let mut lit = HashSet::new();
+        let mut seen = HashSet::new();
+        let mut stack = vec![initial];
+        while let Some(mut beam) = stack.pop() {
+            if !self.h(&beam) || seen.contains(&beam) {
+                continue;
             }
-            self.lit.insert((beam.row, beam.col));
-            self.seen.insert(beam);
+            lit.insert((beam.row, beam.col));
+            seen.insert(beam);
             let tile = self.g(&beam);
             let b2 = beam.advance(tile);
             if let Some(b2) = b2 {
-                self.handle(b2);
+                stack.push(b2);
             }
+            stack.push(beam);
         }
+        lit.len()
     }
 
     fn g(&self, b: &Beam) -> Tile {
-        self.map[(b.row as usize, b.col as usize)]
+        self.0[(b.row as usize, b.col as usize)]
     }
 
     fn h(&self, b: &Beam) -> bool {
-        self.map.get((b.row as usize, b.col as usize)).is_some()
+        self.0.get((b.row as usize, b.col as usize)).is_some()
     }
 }
 
 fn part1(inp: &str) -> usize {
-    let mut st = State::parse(inp);
+    let st = Map::parse(inp);
     st.handle(Beam {
         row: 0,
         col: 0,
         d: Dir::Right,
-    });
-    st.lit.len()
+    })
 }
 
 fn part2(inp: &str) -> usize {
-    let st = State::parse(inp);
-    let initial = (0..st.map.nrows())
+    let st = Map::parse(inp);
+    let initial = (0..st.0.nrows())
         .flat_map(|row| {
             [
                 Beam {
@@ -171,12 +167,12 @@ fn part2(inp: &str) -> usize {
                 },
                 Beam {
                     row: row as i64,
-                    col: st.map.ncols() as i64 - 1,
+                    col: st.0.ncols() as i64 - 1,
                     d: Dir::Left,
                 },
             ]
         })
-        .chain((0..st.map.ncols()).flat_map(|col| {
+        .chain((0..st.0.ncols()).flat_map(|col| {
             [
                 Beam {
                     row: 0,
@@ -184,22 +180,14 @@ fn part2(inp: &str) -> usize {
                     d: Dir::Down,
                 },
                 Beam {
-                    row: st.map.nrows() as i64 - 1,
+                    row: st.0.nrows() as i64 - 1,
                     col: col as i64,
                     d: Dir::Up,
                 },
             ]
         }))
         .collect::<Vec<_>>();
-    initial
-        .into_par_iter()
-        .map(|b| {
-            let mut st = st.clone();
-            st.handle(b);
-            st.lit.len()
-        })
-        .max()
-        .unwrap()
+    initial.into_par_iter().map(|b| st.handle(b)).max().unwrap()
 }
 
 xaoc::xaoc!(
