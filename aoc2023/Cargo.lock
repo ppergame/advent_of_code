@@ -90,6 +90,7 @@ dependencies = [
  "aho-corasick",
  "anyhow",
  "colored",
+ "indexmap",
  "itertools 0.12.0",
  "ndarray",
  "rangemap",
