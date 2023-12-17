@@ -1,6 +1,6 @@
+use arrayvec::ArrayVec;
 use ndarray::{Array2, ArrayView, Axis};
 use rayon::prelude::*;
-use std::collections::HashSet;
 
 #[derive(Debug, Default, Copy, Clone)]
 enum Tile {
@@ -18,23 +18,24 @@ enum Tile {
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 enum Dir {
-    Up,
-    Right,
-    Down,
-    Left,
+    Up = 1,
+    Right = 2,
+    Down = 4,
+    Left = 8,
 }
 
 #[derive(Debug, Copy, Clone, PartialEq, Eq, Hash)]
 struct Beam {
-    row: i64,
-    col: i64,
+    row: usize,
+    col: usize,
     d: Dir,
 }
 
 impl Beam {
-    fn advance(&mut self, tile: Tile) -> Option<Beam> {
+    fn advance(mut self, tile: Tile, map: &Map) -> ArrayVec<Beam, 2> {
+        let mut ret = ArrayVec::new();
         match tile {
-            Tile::Empty => self.advance_dir(),
+            Tile::Empty => (),
             Tile::FMirror => {
                 self.d = match self.d {
                     Dir::Up => Dir::Right,
@@ -42,7 +43,6 @@ impl Beam {
                     Dir::Down => Dir::Left,
                     Dir::Left => Dir::Down,
                 };
-                self.advance_dir();
             }
             Tile::BMirror => {
                 self.d = match self.d {
@@ -51,41 +51,64 @@ impl Beam {
                     Dir::Down => Dir::Right,
                     Dir::Left => Dir::Up,
                 };
-                self.advance_dir();
             }
             Tile::HSplit => match self.d {
-                Dir::Right | Dir::Left => self.advance_dir(),
+                Dir::Right | Dir::Left => (),
                 Dir::Up | Dir::Down => {
-                    let mut b2 = *self;
+                    let mut b2 = self;
                     self.d = Dir::Right;
-                    self.advance_dir();
                     b2.d = Dir::Left;
-                    b2.advance_dir();
-                    return Some(b2);
+                    if b2.advance_dir(map) {
+                        ret.push(b2);
+                    }
                 }
             },
             Tile::VSplit => match self.d {
-                Dir::Up | Dir::Down => self.advance_dir(),
+                Dir::Up | Dir::Down => (),
                 Dir::Right | Dir::Left => {
-                    let mut b2 = *self;
+                    let mut b2 = self;
                     self.d = Dir::Up;
-                    self.advance_dir();
                     b2.d = Dir::Down;
-                    b2.advance_dir();
-                    return Some(b2);
+                    if b2.advance_dir(map) {
+                        ret.push(b2);
+                    }
                 }
             },
         }
-        None
+        if self.advance_dir(map) {
+            ret.push(self);
+        }
+        ret
     }
 
-    fn advance_dir(&mut self) {
+    fn advance_dir(&mut self, map: &Map) -> bool {
         match self.d {
-            Dir::Up => self.row -= 1,
-            Dir::Right => self.col += 1,
-            Dir::Down => self.row += 1,
-            Dir::Left => self.col -= 1,
+            Dir::Up => {
+                if self.row == 0 {
+                    return false;
+                }
+                self.row -= 1;
+            }
+            Dir::Right => {
+                if self.col == map.0.ncols() - 1 {
+                    return false;
+                }
+                self.col += 1;
+            }
+            Dir::Down => {
+                if self.row == map.0.nrows() - 1 {
+                    return false;
+                }
+                self.row += 1;
+            }
+            Dir::Left => {
+                if self.col == 0 {
+                    return false;
+                }
+                self.col -= 1;
+            }
         }
+        true
     }
 }
 
@@ -118,31 +141,17 @@ impl Map {
     }
 
     fn handle(&self, initial: Beam) -> usize {
-        let mut lit = HashSet::new();
-        let mut seen = HashSet::new();
+        let mut seen = Array2::<u8>::zeros(self.0.dim());
         let mut stack = vec![initial];
-        while let Some(mut beam) = stack.pop() {
-            if !self.h(&beam) || seen.contains(&beam) {
+        while let Some(beam) = stack.pop() {
+            if seen[(beam.row, beam.col)] & beam.d as u8 != 0 {
                 continue;
             }
-            lit.insert((beam.row, beam.col));
-            seen.insert(beam);
-            let tile = self.g(&beam);
-            let b2 = beam.advance(tile);
-            if let Some(b2) = b2 {
-                stack.push(b2);
-            }
-            stack.push(beam);
+            seen[(beam.row, beam.col)] |= beam.d as u8;
+            let tile = self.0[(beam.row, beam.col)];
+            stack.extend(beam.advance(tile, self));
         }
-        lit.len()
-    }
-
-    fn g(&self, b: &Beam) -> Tile {
-        self.0[(b.row as usize, b.col as usize)]
-    }
-
-    fn h(&self, b: &Beam) -> bool {
-        self.0.get((b.row as usize, b.col as usize)).is_some()
+        seen.iter().filter(|&&x| x != 0).count()
     }
 }
 
@@ -161,13 +170,13 @@ fn part2(inp: &str) -> usize {
         .flat_map(|row| {
             [
                 Beam {
-                    row: row as i64,
+                    row,
                     col: 0,
                     d: Dir::Right,
                 },
                 Beam {
-                    row: row as i64,
-                    col: st.0.ncols() as i64 - 1,
+                    row,
+                    col: st.0.ncols() - 1,
                     d: Dir::Left,
                 },
             ]
@@ -176,12 +185,12 @@ fn part2(inp: &str) -> usize {
             [
                 Beam {
                     row: 0,
-                    col: col as i64,
+                    col,
                     d: Dir::Down,
                 },
                 Beam {
-                    row: st.0.nrows() as i64 - 1,
-                    col: col as i64,
+                    row: st.0.nrows() - 1,
+                    col,
                     d: Dir::Up,
                 },
             ]
