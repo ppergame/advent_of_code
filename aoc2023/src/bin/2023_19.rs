@@ -1,4 +1,3 @@
-use rangemap::RangeSet;
 use sscanf::scanf;
 use std::collections::HashMap;
 
@@ -157,35 +156,32 @@ fn part1(inp: &str) -> i64 {
     ret
 }
 
-fn set_len(set: &RangeSet<i64>) -> i64 {
-    set.iter().map(|r| r.end - r.start).sum()
-}
-
 #[derive(Clone)]
 struct Range {
-    x: RangeSet<i64>,
-    m: RangeSet<i64>,
-    a: RangeSet<i64>,
-    s: RangeSet<i64>,
+    x: (i64, i64),
+    m: (i64, i64),
+    a: (i64, i64),
+    s: (i64, i64),
 }
 
 impl Range {
     fn new() -> Range {
-        let mut r = RangeSet::new();
-        r.insert(1..4001);
         Range {
-            x: r.clone(),
-            m: r.clone(),
-            a: r.clone(),
-            s: r,
+            x: (1, 4001),
+            m: (1, 4001),
+            a: (1, 4001),
+            s: (1, 4001),
         }
     }
 
     fn len(&self) -> i64 {
-        set_len(&self.x) * set_len(&self.m) * set_len(&self.a) * set_len(&self.s)
+        (self.x.1 - self.x.0)
+            * (self.m.1 - self.m.0)
+            * (self.a.1 - self.a.0)
+            * (self.s.1 - self.s.0)
     }
 
-    fn sel(&mut self, prop: &Prop) -> &mut RangeSet<i64> {
+    fn sel(&mut self, prop: &Prop) -> &mut (i64, i64) {
         match prop {
             Prop::X => &mut self.x,
             Prop::M => &mut self.m,
@@ -198,16 +194,22 @@ impl Range {
         let mut range2 = self.clone();
         match &rule.op {
             Op::Lt => {
-                self.sel(&rule.prop).remove(rule.val..4001);
-                range2.sel(&rule.prop).remove(1..rule.val);
+                intersect(self.sel(&rule.prop), (1, rule.val));
+                intersect(range2.sel(&rule.prop), (rule.val, 4001));
             }
             Op::Gt => {
-                self.sel(&rule.prop).remove(1..rule.val + 1);
-                range2.sel(&rule.prop).remove(rule.val + 1..4001);
+                intersect(self.sel(&rule.prop), (rule.val + 1, 4001));
+                intersect(range2.sel(&rule.prop), (1, rule.val + 1));
             }
         };
         (self, range2)
     }
+}
+
+fn intersect(a: &mut (i64, i64), b: (i64, i64)) {
+    a.0 = a.0.max(b.0);
+    a.1 = a.1.min(b.1);
+    a.1 = a.1.max(a.0);
 }
 
 impl Workflows {
@@ -215,12 +217,17 @@ impl Workflows {
         match verdict {
             Verdict::Accept => range.len(),
             Verdict::Reject => 0,
-            Verdict::Workflow(w) => self.search(range, w),
+            Verdict::Workflow(w) => {
+                if range.len() == 0 {
+                    return 0;
+                }
+                self.search(range, w)
+            }
         }
     }
 
     fn search(&self, mut range: Range, workflow: &str) -> i64 {
-        // eprintln!("search {} {}", range.len(), workflow.name);
+        // eprintln!("search {} {}", range.len(), workflow);
         let mut sum = 0;
         let mut new_range;
         let workflow = &self.0[workflow];
