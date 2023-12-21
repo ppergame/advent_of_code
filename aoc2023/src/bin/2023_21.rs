@@ -1,40 +1,38 @@
-use std::collections::{HashSet, VecDeque};
+use ahash::AHashSet as HashSet;
+use itertools::Itertools as _;
+use ndarray::{Array2, ArrayView, Axis};
+use std::collections::VecDeque;
 
 struct Map {
-    map: HashSet<(i64, i64)>,
-    width: i64,
-    height: i64,
+    map: Array2<bool>,
     start: (i64, i64),
 }
 
 impl Map {
     fn parse(inp: &str) -> Map {
-        let mut map = HashSet::new();
+        let width = inp.lines().next().unwrap().chars().count();
+        let mut map = Array2::default((0, width));
         let mut start = None;
-        let mut height = 0;
-        let mut width = 0;
         for (row, line) in inp.lines().enumerate() {
-            let row = row as i64;
+            let mut next_row = vec![];
             for (col, c) in line.chars().enumerate() {
-                let col = col as i64;
                 if c == 'S' {
-                    start = Some((row, col));
+                    start = Some((row as i64, col as i64));
                 }
-                match c {
-                    '#' => {
-                        map.insert((row, col));
-                        height = height.max(row);
-                        width = width.max(col);
-                    }
-                    '.' | 'S' => {}
+                next_row.push(match c {
+                    '#' => true,
+                    '.' | 'S' => false,
                     _ => unreachable!(),
-                }
+                });
             }
+            map.append(
+                Axis(0),
+                ArrayView::from(&next_row).into_shape((1, width)).unwrap(),
+            )
+            .unwrap();
         }
         Map {
             map,
-            width,
-            height,
             start: start.unwrap(),
         }
     }
@@ -59,17 +57,17 @@ impl Map {
             }
         }
         seen.into_iter()
-            .filter(|p| (p.0 + p.1).rem_euclid(2) == steps as i64 % 2)
+            .filter(|(row, col)| (row + col).rem_euclid(2) == steps as i64 % 2)
             .count()
     }
 
     #[allow(dead_code)]
     fn print(&self, found: &HashSet<(i64, i64)>) {
-        for row in 0..self.height + 1 {
-            for col in 0..self.width + 1 {
-                if found.contains(&(row, col)) {
+        for row in 0..=self.map.nrows() {
+            for col in 0..=self.map.ncols() {
+                if found.contains(&(row as i64, col as i64)) {
                     eprint!("O");
-                } else if self.map.contains(&(row, col)) {
+                } else if self.map[(row, col)] {
                     eprint!("#");
                 } else {
                     eprint!(".");
@@ -80,15 +78,15 @@ impl Map {
     }
 
     fn is_wall(&self, (row, col): (i64, i64)) -> bool {
-        self.map.contains(&(
-            row.rem_euclid(self.height + 2),
-            col.rem_euclid(self.width + 2),
-        ))
+        self.map[(
+            row.rem_euclid(self.map.nrows() as i64) as usize,
+            col.rem_euclid(self.map.ncols() as i64) as usize,
+        )]
     }
 }
 
-fn adj((row, col): (i64, i64)) -> Vec<(i64, i64)> {
-    vec![
+fn adj((row, col): (i64, i64)) -> [(i64, i64); 4] {
+    [
         (row - 1, col),
         (row, col - 1),
         (row + 1, col),
@@ -98,33 +96,31 @@ fn adj((row, col): (i64, i64)) -> Vec<(i64, i64)> {
 
 fn part1(inp: &str) -> usize {
     let map = Map::parse(inp);
-    let steps = if map.map.len() < 100 { 6 } else { 64 };
+    let steps = if map.map.nrows() < 50 { 6 } else { 64 };
     map.reach(steps)
 }
 
 fn part2(inp: &str) -> usize {
     let map = Map::parse(inp);
-    if map.map.len() < 100 {
+    if map.map.nrows() < 50 {
         return map.reach(1000);
     }
     const GOAL: usize = 26501365;
-    let start = GOAL % 262;
-    let mut prev = 0;
-    let mut pprev = 0;
-    let mut ppprev = 0;
-    for steps in (start..GOAL).step_by(262) {
-        let count = map.reach(steps);
-        let mut inc = count - prev;
-        let inc2 = count - prev - pprev;
-        let inc3 = count - prev - pprev - ppprev;
-        ppprev = count - prev - pprev;
-        pprev = count - prev;
-        prev = count;
+    let iter = (GOAL % 262..)
+        .step_by(262)
+        .map(|steps| (steps, map.reach(steps)))
+        .tuple_windows()
+        .map(|((_, pcount), (steps, count))| (steps, count, count - pcount))
+        .tuple_windows()
+        .map(|((_, _, pinc), (steps, count, inc))| (steps, count, inc, inc - pinc))
+        .tuple_windows()
+        .map(|((_, _, _, pinc2), (steps, count, inc, inc2))| {
+            (steps, count, inc, inc2, inc2 - pinc2)
+        });
+    for (mut steps, mut count, mut inc, inc2, inc3) in iter {
         if inc3 == 0 {
-            let mut sub_steps = steps;
-            let mut count = count;
-            while sub_steps < GOAL {
-                sub_steps += 262;
+            while steps < GOAL {
+                steps += 262;
                 inc += inc2;
                 count += inc;
             }
