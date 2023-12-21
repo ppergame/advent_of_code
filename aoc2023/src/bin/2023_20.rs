@@ -139,24 +139,22 @@ fn part2(inp: &str) -> usize {
     let mut cycles = HashMap::<String, usize>::new();
     for i in 0..10000 {
         let (_, _, rx_inputs) = mods.pulse();
-        if i > 10 {
-            for input in rx_inputs {
-                match (prevs.entry(input.clone()), cycles.entry(input.clone())) {
-                    (Occupied(mut po), Occupied(oc)) => {
-                        let old = *oc.get();
-                        let new = i - po.get();
-                        if old != new {
-                            panic!("irregular cycle for {input} @ {i}: {old} != {new}");
-                        }
-                        po.insert(i);
+        for input in rx_inputs {
+            match (prevs.entry(input.clone()), cycles.entry(input.clone())) {
+                (Occupied(mut po), Occupied(oc)) => {
+                    let old = *oc.get();
+                    let new = i - po.get();
+                    if old != new {
+                        panic!("irregular cycle for {input} @ {i}: {old} != {new}");
                     }
-                    (Occupied(mut po), Vacant(vc)) => {
-                        vc.insert(i - po.get());
-                        po.insert(i);
-                    }
-                    (Vacant(pv), _) => {
-                        pv.insert(i);
-                    }
+                    po.insert(i);
+                }
+                (Occupied(mut po), Vacant(vc)) => {
+                    vc.insert(i - po.get());
+                    po.insert(i);
+                }
+                (Vacant(pv), _) => {
+                    pv.insert(i);
                 }
             }
         }
