@@ -123,6 +123,7 @@ fn part2(inp: &str) -> i64 {
     let vy = z3::ast::Real::new_const(&ctx, "vy");
     let vz = z3::ast::Real::new_const(&ctx, "vz");
     for (t, s) in intercepts.iter().zip(&stones.0) {
+        solver.assert(&t.ge(&real_from_f64(&ctx, 0.0)));
         solver.assert(
             &(t * &vx + &x)
                 ._eq(&(t * real_from_f64(&ctx, s.vel[0]) + real_from_f64(&ctx, s.pos[0]))),
