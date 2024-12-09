@@ -32,7 +32,7 @@ pub struct Run {
 
 impl Run {
     pub fn new(token: Token, year: Year, day: Day, part: Part) -> Result<Self> {
-        if !(2015..=2023).contains(&year.0) {
+        if !(2015..=2024).contains(&year.0) {
             bail!("bad year {year}");
         }
         if !(1..=25).contains(&day.0) {
@@ -207,7 +207,7 @@ impl Run {
         } else if main.contains("That's the right answer") {
             self.set_answer(res)?;
         }
-        let main = html2text::from_read(main.as_bytes(), 80);
+        let main = html2text::from_read(main.as_bytes(), 80)?;
         println!("\n{main}");
         Ok(())
     }
