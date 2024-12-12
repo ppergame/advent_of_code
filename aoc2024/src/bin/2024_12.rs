@@ -122,25 +122,25 @@ impl Map {
             }
         }
         let mut sides = 0;
-        eprintln!("({row}, {col}): {area} {}", self.m[(row, col)]);
+        // eprintln!("({row}, {col}): {area} {}", self.m[(row, col)]);
         segments_v.sort_by_key(|&(r, c, _)| (c, r));
-        eprintln!("v: {segments_v:?}");
+        // eprintln!("v: {segments_v:?}");
         for ((r1, c1, p1), (r2, c2, p2)) in segments_v.into_iter().circular_tuple_windows() {
-            eprintln!("{:?} {:?}", (r1, c1), (r2, c2));
+            // eprintln!("{:?} {:?}", (r1, c1), (r2, c2));
             if c1 != c2 || r1 + 1 != r2 || p1 != p2 {
                 sides += 1;
             }
         }
-        eprintln!("sides so far {sides}");
+        // eprintln!("sides so far {sides}");
         segments_h.sort_by_key(|&(r, c, _)| (r, c));
-        eprintln!("h: {segments_h:?}");
+        // eprintln!("h: {segments_h:?}");
         for ((r1, c1, p1), (r2, c2, p2)) in segments_h.into_iter().circular_tuple_windows() {
-            eprintln!("{:?} {:?}", (r1, c1), (r2, c2));
+            // eprintln!("{:?} {:?}", (r1, c1), (r2, c2));
             if r1 != r2 || c1 + 1 != c2 || p1 != p2 {
                 sides += 1;
             }
         }
-        eprintln!("sides total {sides}, area {area} -> {}", area * sides);
+        // eprintln!("sides total {sides}, area {area} -> {}", area * sides);
         area * sides
     }
 }
