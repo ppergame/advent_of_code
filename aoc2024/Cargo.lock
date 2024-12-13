@@ -107,6 +107,8 @@ dependencies = [
  "lazy_static",
  "nalgebra",
  "ndarray",
+ "num-rational",
+ "num-traits",
  "pathfinding",
  "petgraph",
  "rand",
