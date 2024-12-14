@@ -1,4 +1,3 @@
-use array2d::Array2D;
 use hashbrown::HashMap;
 use sscanf::scanf;
 
@@ -12,7 +11,6 @@ struct Bot {
 
 struct Map {
     bots: Vec<Bot>,
-    counts: Array2D<usize>,
     width: i64,
     height: i64,
 }
@@ -35,13 +33,8 @@ impl Map {
             width = 101;
             height = 103;
         }
-        let mut counts = Array2D::filled_with(0, height as usize, width as usize);
-        for b in &bots {
-            counts[(b.y as usize, b.x as usize)] += 1;
-        }
         Self {
             bots,
-            counts,
             width,
             height,
         }
@@ -49,10 +42,8 @@ impl Map {
 
     fn step(&mut self) {
         for b in &mut self.bots {
-            self.counts[(b.y as usize, b.x as usize)] -= 1;
             b.x = (b.x + b.vx).rem_euclid(self.width);
             b.y = (b.y + b.vy).rem_euclid(self.height);
-            self.counts[(b.y as usize, b.x as usize)] += 1;
         }
     }
 
