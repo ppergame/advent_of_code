@@ -47,7 +47,9 @@ struct Pos {
 
 struct Map {
     walls: HashSet<(i64, i64)>,
+    #[allow(unused)]
     max_row: i64,
+    #[allow(unused)]
     max_col: i64,
     start: (i64, i64),
     goal: (i64, i64),
@@ -84,8 +86,8 @@ impl Map {
             walls,
             max_row,
             max_col,
-            start: start,
-            goal: goal,
+            start,
+            goal,
         }
     }
 
