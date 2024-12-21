@@ -64,7 +64,7 @@ fn diff((r1, c1): (i64, i64), (r2, c2): (i64, i64)) -> u64 {
     r1.abs_diff(r2) + c1.abs_diff(c2)
 }
 
-fn solve2(map: &Map, threshold: u64, max_cheat: u64) -> u64 {
+fn solve(map: &Map, threshold: u64, max_cheat: u64) -> u64 {
     let (path, base_cost) = astar(
         &map.start,
         |&pos| map.succ(pos),
@@ -92,13 +92,13 @@ fn solve2(map: &Map, threshold: u64, max_cheat: u64) -> u64 {
 fn part1(inp: &str) -> u64 {
     let map = Map::parse(inp);
     let threshold = if map.max_row > 20 { 100 } else { 40 };
-    solve2(&map, threshold, 2)
+    solve(&map, threshold, 2)
 }
 
 fn part2(inp: &str) -> u64 {
     let map = Map::parse(inp);
     let threshold = if map.max_row > 20 { 100 } else { 70 };
-    solve2(&map, threshold, 20)
+    solve(&map, threshold, 20)
 }
 
 xaoc::xaoc!(
