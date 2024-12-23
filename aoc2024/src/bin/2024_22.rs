@@ -49,14 +49,6 @@ fn part2(inp: &str) -> i64 {
     *vals.values().max().unwrap()
 }
 
-// xaoc::xaoc!(
-//     sample = "1
-// 10
-// 100
-// 2024
-// "
-// );
-
 xaoc::xaoc!(
     sample = "1
 10
