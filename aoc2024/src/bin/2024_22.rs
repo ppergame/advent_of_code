@@ -1,37 +1,40 @@
 use itertools::Itertools as _;
+use rayon::prelude::*;
 use std::collections::HashMap;
 
-fn step(mut n: i64) -> i64 {
-    n ^= n * 64;
-    n %= 16777216;
-    n ^= n / 32;
-    n %= 16777216;
-    n ^= n * 2048;
-    n %= 16777216;
-    n
+struct Seq(i64);
+
+impl Iterator for Seq {
+    type Item = i64;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        let mut n = self.0;
+        let ret = n;
+        n ^= n * 64;
+        n %= 16777216;
+        n ^= n / 32;
+        n %= 16777216;
+        n ^= n * 2048;
+        n %= 16777216;
+        self.0 = n;
+        Some(ret)
+    }
 }
 
 fn part1(inp: &str) -> i64 {
     inp.lines()
         .map(|l| {
-            let mut n = l.parse::<i64>().unwrap();
-            for _ in 0..2000 {
-                n = step(n);
-            }
-            n
+            let n = l.parse().unwrap();
+            Seq(n).nth(2000).unwrap()
         })
         .sum()
 }
 
 fn seqmap(n: i64) -> HashMap<[i64; 4], i64> {
-    (0..2000)
-        .scan(n, |n, _| {
-            let ret = *n;
-            *n = step(*n);
-            Some(ret)
-        })
+    Seq(n)
         .tuple_windows()
         .map(|(a, b)| (b % 10, (b % 10) - (a % 10)))
+        .take(2000)
         .tuple_windows()
         .map(|((_, a), (_, b), (_, c), (price, d))| ([a, b, c, d], price))
         .into_grouping_map()
@@ -39,14 +42,19 @@ fn seqmap(n: i64) -> HashMap<[i64; 4], i64> {
 }
 
 fn part2(inp: &str) -> i64 {
-    let mut vals = HashMap::new();
-    for l in inp.lines() {
-        let n = l.parse::<i64>().unwrap();
-        for (seq, price) in seqmap(n) {
-            *vals.entry(seq).or_insert(0) += price;
-        }
-    }
-    *vals.values().max().unwrap()
+    *inp.par_lines()
+        .map(|l| {
+            let n = l.parse().unwrap();
+            seqmap(n)
+        })
+        .collect::<Vec<_>>()
+        .into_iter()
+        .flatten()
+        .into_grouping_map()
+        .sum()
+        .values()
+        .max()
+        .unwrap()
 }
 
 xaoc::xaoc!(
