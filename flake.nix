@@ -5,22 +5,22 @@
     nix-deps.url = "git+ssh://git@github.com/xzrq-net/nix-deps";
 
     nixpkgs = {
-      url = "github:nixos/nixpkgs/nixos-unstable";
+      # url = "github:nixos/nixpkgs/nixos-unstable";
       follows = "nix-deps/nixpkgs";
     };
 
     rust-overlay = {
-      url = "github:oxalica/rust-overlay";
+      # url = "github:oxalica/rust-overlay";
       follows = "nix-deps/rust-overlay";
     };
 
     crane = {
-      url = "github:ipetkov/crane";
+      # url = "github:ipetkov/crane";
       follows = "nix-deps/crane";
     };
 
     flake-utils = {
-      url = "github:numtide/flake-utils";
+      # url = "github:numtide/flake-utils";
       follows = "nix-deps/flake-utils";
     };
   };
@@ -67,6 +67,9 @@
             "aoc2020"
             "aoc2021"
             "aoc2022"
+            "aoc2023"
+            "aoc2024"
+            "aoc2025"
           ])
         // {
           default = mkPackage "xaoc";

@@ -32,7 +32,7 @@ pub struct Run {
 
 impl Run {
     pub fn new(token: Token, year: Year, day: Day, part: Part) -> Result<Self> {
-        if !(2015..=2024).contains(&year.0) {
+        if !(2015..=2025).contains(&year.0) {
             bail!("bad year {year}");
         }
         if !(1..=25).contains(&day.0) {
