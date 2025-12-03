@@ -101,6 +101,7 @@ dependencies = [
  "arrayvec",
  "bitvec",
  "colored 3.0.0",
+ "count-digits",
  "enum-tools",
  "hashbag",
  "hashbrown 0.16.1",
@@ -424,6 +425,12 @@ name = "core-foundation-sys"
 version = "0.8.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "773648b94d0e5d620f64f280777445740e61fe701025087ec8b57f45c791888b"
+
+[[package]]
+name = "count-digits"
+version = "0.5.1"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b9c7f4086dd64c9d7e5e5957af4599fd1329314df9f3856acf677b96502e9aa7"
 
 [[package]]
 name = "cpufeatures"
