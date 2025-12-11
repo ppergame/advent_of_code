@@ -1,7 +1,7 @@
 use hashbrown::HashMap;
 use pathfinding::prelude::count_paths;
 
-fn parse<'a>(inp: &'a str) -> impl Fn(&&str) -> Vec<&'a str> + 'a {
+fn parse<'a>(inp: &'a str) -> impl Fn(&str, &str) -> usize + 'a {
     let next = inp
         .lines()
         .map(|l| {
@@ -9,17 +9,15 @@ fn parse<'a>(inp: &'a str) -> impl Fn(&&str) -> Vec<&'a str> + 'a {
             (node, outs.split_whitespace().collect::<Vec<_>>())
         })
         .collect::<HashMap<_, _>>();
-    move |s| next.get(s).cloned().unwrap_or_default()
+    move |from, to| count_paths(from, |s| next.get(s).cloned().unwrap_or_default(), |&s| s == to)
 }
 
 fn part1(inp: &str) -> usize {
-    let next = parse(inp);
-    count_paths("you", next, |&s| s == "out")
+    parse(inp)("you", "out")
 }
 
 fn part2<'a>(inp: &'a str) -> usize {
-    let next = parse(inp);
-    let count = |from: &'a str, to: &str| count_paths(from, &next, |&s| s == to);
+    let count = parse(inp);
     count("svr", "dac") * count("dac", "fft") * count("fft", "out")
         + count("svr", "fft") * count("fft", "dac") * count("dac", "out")
 }
