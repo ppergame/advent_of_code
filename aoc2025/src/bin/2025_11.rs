@@ -9,14 +9,20 @@ fn parse<'a>(inp: &'a str) -> impl Fn(&str, &str) -> usize + 'a {
             (node, outs.split_whitespace().collect::<Vec<_>>())
         })
         .collect::<HashMap<_, _>>();
-    move |from, to| count_paths(from, |s| next.get(s).cloned().unwrap_or_default(), |&s| s == to)
+    move |from, to| {
+        count_paths(
+            from,
+            |s| next.get(s).cloned().unwrap_or_default(),
+            |&s| s == to,
+        )
+    }
 }
 
 fn part1(inp: &str) -> usize {
     parse(inp)("you", "out")
 }
 
-fn part2<'a>(inp: &'a str) -> usize {
+fn part2(inp: &str) -> usize {
     let count = parse(inp);
     count("svr", "dac") * count("dac", "fft") * count("fft", "out")
         + count("svr", "fft") * count("fft", "dac") * count("dac", "out")
